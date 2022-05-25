@@ -1,0 +1,5 @@
+name: Core
+main: core\Core
+api: 4.0.0
+version: 1.0
+aurhor: HasperXz
