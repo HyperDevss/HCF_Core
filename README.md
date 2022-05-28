@@ -1,2 +1,2 @@
 # HCF_Core
-Core de HCF publica
+Core de HCF Publica, Creado por HyperDevs.
