@@ -18,7 +18,7 @@ trait Utils {
         return $this->getWorldManager()->getDefaultWorld();
     }
     
-    public function gerPlayer(string $name) {
+    public function getPlayer(string $name) {
         foreach ($this->getOnlinePlayers() as $player) {
             if (strtolower($player->getName()) )
         }
