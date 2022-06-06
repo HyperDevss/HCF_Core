@@ -16,38 +16,64 @@ class Config {
     public function __construct() {
         self::setInstance($this);
         $this->dataFolder = Core::getInstance()->getDataFolder();
+        $this->loadConfigs();
+        $this->set("Test/Test", "name", "buba");
     }
 
     public function loadConfigs() {
-        $glob = glob($this->dataFolder);
-        if (count($glob) === 0) return;
+        $files = [
+            "Test/Test"
+        ];
 
-        $dirs = [];
-        foreach ($glob as $path) {
-            if (is_file($path)) {
-                $this->readFile($path);
-                continue;
-            }
-
-            $dirs[] = $path;
-        }
-
-        if (count($dirs) > 0) {
-            foreach ($dirs as $path) {
-                $this->readDir($path);
-            }
+        foreach ($files as $file) {
+            $this->readFile($file);
         }
     }
 
-    public function readDir(string $dirPath) {
-        $glob = glob($dirPath);
 
-        if (count($glob) > 0) {
-            foreach ($glob as $path) {
-                $this->readFile($path);
-            }
-        }
+    public function readFile(string $path) {
+        $this->configsLoaded[$path] = new IConfig($this->dataFolder . $path . ".yml", IConfig::YAML);
+        $this->configs[$path] = $this->configsLoaded[$path]->getAll();
     }
 
-    public function readFile(string $path) {}
+    public function getAll($file) {
+        if ($file === null) return $this->configs;
+        return $this->configs[$file];
+    }
+
+    public function get($file, $key) {
+        return $this->configs[$file][$key];
+    }
+
+    public function exist($file, $key): bool {
+        if (!isset($this->configsLoaded[$file])) $this->readFile($file);
+        return isset($this->configs[$file][$key]);
+    }
+
+    public function set($file, $key, $value) {
+        $config = $this->configsLoaded[$file];
+        $config->set($key, $value);
+        $config->save();
+        $this->configs[$file][$key] = $value;
+    }
+
+    public function remove($file, $key) {
+        $config = $this->configsLoaded[$file];
+        $config->remove($key);
+        $config->save();
+        unset($this->configs[$file][$key]);
+    }
+
+    public function setAll($file, array $content) {
+        $config = $this->configsLoaded[$file];
+        $config->setAll($value);
+        $config->save();
+        $this->configs[$file][$key] = $value;
+    }
+
+    public function removeAll($file) {
+        unset($this->configsLoaded[$file]);
+        unset($this->configs[$file]);
+        unlink($this->dataFolder . $file . ".yml");
+    }
 }
