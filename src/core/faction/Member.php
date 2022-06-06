@@ -24,7 +24,7 @@ class Member {
         $this->type = $type;
         $this->faction = $faction;
         
-        $this->config = $this->config;
+        $this->config = $this->getConfig();
     }
     
     public function getName(): string {
