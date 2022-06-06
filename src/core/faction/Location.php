@@ -8,12 +8,15 @@ use pocketmine\world\Position;
 class Location {
     
     private $faction;
-    private $home;
-    private $firstPos;
-    private $secondPos;
+    public $home;
+    public $firstPos;
+    public $secondPos;
     
-    public function __constrcut(Faction $faction) {
+    private $config;
+    
+    public function __constrcut($faction) {
         $this->faction = $faction;
+        $this->config = $this->getConfig();
     }
     
     public function getHome() {
@@ -30,13 +33,16 @@ class Location {
     
     public function setHome(Position $home) {
         $this->home = $home;
+        $this->config->set("factions/" . $this->faction, "home", $this->vectorToArray($this->home)); 
     }
     
     public function setFirstPos(Position $firstPos) {
         $this->firstPos = $firstPos;
+        $this->config->set("factions/" . $this->faction, "firstPos", $this->vectorToArray($this->firstPos)); 
     }
     
     public function setSecondPos(Position $secondPos) {
         $this->secondPos = $secondPos;
+        $this->config->set("factions/" . $this->faction, "secondPos", $this->vectorToArray($this->secondPos)); 
     }
 }
